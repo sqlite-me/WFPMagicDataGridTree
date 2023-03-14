@@ -31,7 +31,7 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="PId" Binding="{Binding PId}"/>
                 <DataGridTextColumn Header="HasChild" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridRow},Path=HasChild}"/>
-                <DataGridTextColumn Header="ChildrenCount" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridRow},Path=ChildCount}"/>
+                <DataGridTextColumn Header="ChildrenCount" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridRow},Path=ChildrenCount}"/>
             </DataGrid.Columns>
         </mgtree:DataGridTree>
     </Grid>

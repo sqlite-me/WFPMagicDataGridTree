@@ -42,26 +42,22 @@ namespace MagicDataGridTree
             return (DataTemplate)dataTemplateRlt;
         }
 
-        private readonly Dictionary<Type, Delegate> _dicIdGets;
-        private readonly Dictionary<Type, Delegate> _dicPIdGets;
-        private readonly Dictionary<object, TreeRowCtlData> _dicToTreeDatas;
+        private readonly Dictionary<object, TreeRowCtlData> _dicCtlDatas;
         private readonly List<TreeRowCtlData> _roots = new();
         private readonly List<object> _itemsDisplayList;
-        private readonly ListCollectionView _itemsSourceView;
+        private readonly ListCollectionView _itemsDisplayListView;
         private static bool _isOnItemsSourceChanged;
         public DataGridTree()
         {
             AutoGenerateColumns = false;
             CanUserAddRows = false;
 
-            _dicIdGets = new();
-            _dicPIdGets = new();
-            _dicToTreeDatas = new();
+            _dicCtlDatas = new();
 
             _itemsDisplayList = new();
 
-            _itemsSourceView = new ListCollectionView(_itemsDisplayList);
-            base.ItemsSource = _itemsSourceView;
+            _itemsDisplayListView = new ListCollectionView(_itemsDisplayList);
+            base.ItemsSource = _itemsDisplayListView;
 
             base.Sorting += DataGridTree_Sorting;
             
@@ -81,7 +77,6 @@ namespace MagicDataGridTree
         public static readonly DependencyProperty TreeCellHeaderProperty =
             DependencyProperty.Register("TreeCellHeader", typeof(object), typeof(DataGridTree), new PropertyMetadata(null));
 
-
         public DataGridColumn TreeCellTemplate
         {
             get { return (DataGridColumn)GetValue(TreeCellTemplateProperty); }
@@ -89,9 +84,7 @@ namespace MagicDataGridTree
         }
         public static readonly DependencyProperty TreeCellTemplateProperty =
             DependencyProperty.Register("TreeCellTemplate", typeof(DataGridColumn), typeof(DataGridTree), new PropertyMetadata(null));
-        private DataGridColumn _treeColumn;
-
-        public BindingBase TreeCellBinding { get; set; }
+        private DataGridColumn? _treeColumn;
 
         public object TreeCell
         {
@@ -138,12 +131,12 @@ namespace MagicDataGridTree
 
         private void setIsOpenAll(bool isOpen)
         {
-            _itemsSourceView.CancelEdit();
+            _itemsDisplayListView.CancelEdit();
             foreach (var one in _roots)
             {
                 one.SetIsOpenAll(isOpen);
             }
-            _itemsSourceView.Refresh();
+            _itemsDisplayListView.Refresh();
         }
 
         [Bindable(true),]
@@ -165,20 +158,20 @@ namespace MagicDataGridTree
         }
         public new static readonly DependencyProperty ItemsSourceProperty
             = DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(DataGridTree),
-                                          new FrameworkPropertyMetadata((IEnumerable)null,
+                                          new FrameworkPropertyMetadata(null,
                                                                         new PropertyChangedCallback(OnItemsSourceChanged)));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DataGridTree ic = (DataGridTree)d;
+            DataGridTree tree = (DataGridTree)d;
             IEnumerable oldValue = (IEnumerable)e.OldValue;
             IEnumerable newValue = (IEnumerable)e.NewValue;
 
-            ((IContainItemStorage)ic).Clear();
+            ((IContainItemStorage)tree).Clear();
 
-            ic.fresh();
+            tree.fresh();
             _isOnItemsSourceChanged = true;
-            ic.OnItemsSourceChanged(oldValue, newValue);
+            tree.OnItemsSourceChanged(oldValue, newValue);
             _isOnItemsSourceChanged = false;
         }
 
@@ -236,10 +229,10 @@ namespace MagicDataGridTree
 
         private void fresh(bool merge = false)
         {
-            _itemsSourceView.CancelEdit();
+            _itemsDisplayListView.CancelEdit();
             TreeHelper treeHelper = new(this);
             treeHelper.BuildTree();
-            _itemsSourceView.Refresh();
+            _itemsDisplayListView.Refresh();
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -268,7 +261,7 @@ namespace MagicDataGridTree
             //{
             //    binding = processBinding(this.TreeCellBinding, item);
             //}
-            _dicToTreeDatas[item].TreeGridRow = row;
+            _dicCtlDatas[item].TreeGridRow = row;
             //BindingOperations.SetBinding(row.TreeRowCtlData, TreeRowCtlData.TreeCellProperty, binding);
         }
 
@@ -278,7 +271,7 @@ namespace MagicDataGridTree
             private readonly DataGridTree treeGridData;
             private readonly IEnumerable ItemsSource;
             private readonly Dictionary<object, TreeRowCtlData> _dicToTreeDatas;
-            private Dictionary<object, TreeRowCtlData> _dicToTreeDatasOld;
+            private Dictionary<object, TreeRowCtlData>? _dicToTreeDatasOld;
             private readonly List<object> _itemsDisplayList;
             private readonly List<TreeRowCtlData> _roots;
 
@@ -286,7 +279,7 @@ namespace MagicDataGridTree
             {
                 this.treeGridData = treeGridData;
                 ItemsSource = treeGridData.ItemsSource;
-                _dicToTreeDatas = treeGridData._dicToTreeDatas;
+                _dicToTreeDatas = treeGridData._dicCtlDatas;
                 _itemsDisplayList = treeGridData._itemsDisplayList;
                 _roots = treeGridData._roots;
             }
@@ -300,7 +293,7 @@ namespace MagicDataGridTree
                 var sourceType = this.ItemsSource.GetType();
                 var source = this.ItemsSource.Cast<object>()
                     .Select(t =>
-                    _dicToTreeDatasOld.ContainsKey(t) ? _dicToTreeDatasOld[t] : new TreeRowCtlData(t, treeGridData, _itemsDisplayList, _dicToTreeDatas, treeGridData._itemsSourceView)
+                    _dicToTreeDatasOld.ContainsKey(t) ? _dicToTreeDatasOld[t] : new TreeRowCtlData(t, treeGridData, _itemsDisplayList, _dicToTreeDatas, treeGridData._itemsDisplayListView)
                     );
                 var dicPIdGroups = source.GroupBy(s => s.ParentId).ToDictionary(g => g.Key, g => g.ToList());
                 _roots.Clear();
