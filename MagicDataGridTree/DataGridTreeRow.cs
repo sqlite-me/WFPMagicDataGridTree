@@ -19,23 +19,32 @@ namespace MagicDataGridTree
             TreeRowCtlData=treeRowCtlData;
 
             this.Expanded = TreeRowCtlData?.Expanded??false;
-            BindingOperations.SetBinding(this, ChildrenProperty,
-                new Binding($"{nameof(TreeRowCtlData.ChildrenDatas)}") { Source = TreeRowCtlData });
 
-            BindingOperations.SetBinding(this, HasChildProperty,
+            var hasBinding = BindingOperations.GetBinding(this, ChildrenProperty);
+            if (hasBinding == null)
+                BindingOperations.SetBinding(this, ChildrenProperty,
+                    new Binding($"{nameof(TreeRowCtlData.ChildrenDatas)}") { Source = TreeRowCtlData });
+
+            hasBinding = BindingOperations.GetBinding(this, HasChildProperty);
+            if (hasBinding == null)
+                BindingOperations.SetBinding(this, HasChildProperty,
                 new Binding($"{nameof(TreeRowCtlData.HasChild)}") { Source = TreeRowCtlData });
 
-            BindingOperations.SetBinding(this, ChildrenCountProperty,
+            hasBinding = BindingOperations.GetBinding(this, ChildrenCountProperty);
+            if (hasBinding == null)
+                BindingOperations.SetBinding(this, ChildrenCountProperty,
                 new Binding($"{nameof(TreeRowCtlData.ChildrenCount)}") { Source = TreeRowCtlData });
 
-            BindingOperations.SetBinding(this, AllChildrenProperty,
-                new Binding($"{nameof(TreeRowCtlData.AllChildrenDatas)}")
+            hasBinding = BindingOperations.GetBinding(this, TreeLeveProperty);
+            if (hasBinding == null)
+                BindingOperations.SetBinding(this, TreeLeveProperty,
+                new Binding($"{nameof(TreeRowCtlData.Leve)}")
                 {
                     Source = TreeRowCtlData,
                 });
 
-            BindingOperations.SetBinding(this, TreeLeveProperty,
-                new Binding($"{nameof(TreeRowCtlData.Leve)}")
+            BindingOperations.SetBinding(this, AllChildrenProperty,
+                new Binding($"{nameof(TreeRowCtlData.AllChildrenDatas)}")
                 {
                     Source = TreeRowCtlData,
                 });

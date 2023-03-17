@@ -42,7 +42,7 @@ namespace MagicDataGridTree
             return (DataTemplate)dataTemplateRlt;
         }
 
-        private readonly Dictionary<object, TreeRowCtlData> _dicCtlDatas;
+        private readonly NullableDictionary<object, TreeRowCtlData> _dicCtlDatas;
         private readonly List<TreeRowCtlData> _roots = new();
         private readonly List<object> _itemsDisplayList;
         private readonly ListCollectionView _itemsDisplayListView;
@@ -270,8 +270,8 @@ namespace MagicDataGridTree
             private readonly List<object> ordedArr = new();
             private readonly DataGridTree treeGridData;
             private readonly IEnumerable ItemsSource;
-            private readonly Dictionary<object, TreeRowCtlData> _dicToTreeDatas;
-            private Dictionary<object, TreeRowCtlData>? _dicToTreeDatasOld;
+            private readonly NullableDictionary<object, TreeRowCtlData> _dicToTreeDatas;
+            private NullableDictionary<object, TreeRowCtlData>? _dicToTreeDatasOld;
             private readonly List<object> _itemsDisplayList;
             private readonly List<TreeRowCtlData> _roots;
 
@@ -286,17 +286,20 @@ namespace MagicDataGridTree
 
             public void BuildTree()
             {
-                _dicToTreeDatasOld= _dicToTreeDatas.ToDictionary(t=>t.Key, t=>t.Value);
+                _dicToTreeDatasOld= NullableDictionary.ToNullableDictionary(_dicToTreeDatas);
                 _dicToTreeDatas.Clear();
                 _itemsDisplayList.Clear();
+                _roots.Clear();
+                if (this.ItemsSource == null)
+                    return;
 
                 var sourceType = this.ItemsSource.GetType();
                 var source = this.ItemsSource.Cast<object>()
                     .Select(t =>
                     _dicToTreeDatasOld.ContainsKey(t) ? _dicToTreeDatasOld[t] : new TreeRowCtlData(t, treeGridData, _itemsDisplayList, _dicToTreeDatas, treeGridData._itemsDisplayListView)
                     );
-                var dicPIdGroups = source.GroupBy(s => s.ParentId).ToDictionary(g => g.Key, g => g.ToList());
-                _roots.Clear();
+                var dicPIdGroups = source.GroupBy(s => s.ParentId).ToNullableDictionary(g => g.Key, g => g.ToList());
+                
                 var roots = dicPIdGroups.FirstOrDefault(g => dicPIdGroups.Where(t => !t.Equals(g)).SelectMany(t => t.Value).All(dv => dv.Id.Equals(g.Key) != true));
                 if (roots.Value?.Count > 0)
                     _roots.AddRange(roots.Value);
@@ -305,12 +308,16 @@ namespace MagicDataGridTree
             }
 
             private void buildTreeInner(List<TreeRowCtlData> currentLeveDatas,
-                Dictionary<object, List<TreeRowCtlData>> dic,
+                IDictionary<object, List<TreeRowCtlData>> dic,
                 TreeRowCtlData? parent = null, int leve = 0, bool visibleChild = true)
             {
                 if (currentLeveDatas == null) return;
                 foreach (var one in currentLeveDatas)
                 {
+                    if (_dicToTreeDatas.ContainsKey(one.Target) && leve > _dicToTreeDatas[one.Target].Leve)
+                    {// prevent recursion
+                        continue;
+                    }
                     one.Leve = leve;
                     one.Parent = parent;
                     _dicToTreeDatas[one.Target] = one;

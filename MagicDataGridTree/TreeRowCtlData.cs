@@ -22,7 +22,7 @@ namespace MagicDataGridTree
         /// <inheritdoc cref="INotifyPropertyChanging.PropertyChanging"/>
         public event PropertyChangingEventHandler? PropertyChanging;
 
-        public TreeRowCtlData(object target, DataGridTree treeGridData, List<object> _itemsDisplayList, Dictionary<object, TreeRowCtlData> _dicToTreeDatas, ListCollectionView _itemsSourceView)
+        public TreeRowCtlData(object target, DataGridTree treeGridData, List<object> _itemsDisplayList, IDictionary<object, TreeRowCtlData> _dicToTreeDatas, ListCollectionView _itemsSourceView)
         {
             _treeGridData = treeGridData;
             this._itemsDisplayList = _itemsDisplayList;
@@ -122,7 +122,7 @@ namespace MagicDataGridTree
         public object Target { get; }
         private readonly DataGridTree _treeGridData;
         private readonly List<object> _itemsDisplayList;
-        private readonly Dictionary<object, TreeRowCtlData> _dicToTreeDatas;
+        private readonly IDictionary<object, TreeRowCtlData> _dicToTreeDatas;
         private readonly ListCollectionView _itemsSourceView;
 
         public bool HasChild => Children?.Count > 0;

@@ -9,7 +9,7 @@
                 </MultiBinding>
             </Rectangle.Width>
         </Rectangle>
-        <ToggleButton x:Name="ExpanderButton"
+        <ToggleButton x:Name="ExpanderButton" BorderThickness="0"
                           IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridRow},Path=Expanded,Mode=TwoWay}">
             <ToggleButton.Visibility>
                 <MultiBinding Converter="{StaticResource __Magic.DataGridTree.InnerToggleButton.Visibility.Converter__}">
