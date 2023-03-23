@@ -101,6 +101,16 @@ namespace Demo
             if(datas.Count>0)
             removeDatas(rd.Next(0, datas.Count - 1), rd.Next());
         }
+
+        private void TextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBlock_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
     }
 
     class com : IEqualityComparer<string>

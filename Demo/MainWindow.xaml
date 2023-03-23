@@ -9,10 +9,16 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid>
+        <Grid.Resources>
+            <DataTemplate x:Key="teee">
+                <TextBox Text = "{Binding Name}"/>
+            </DataTemplate>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <!--<ContentControl ContentTemplate="{DynamicResource }" Template="{StaticResource }"/>-->
         <UniformGrid>
             <Button x:Name="btnTest" Click="btnTest_Click">Test Add</Button>
             <Button x:Name="btnTestRemove" Click="btnTestRemove_Click">Test Remove</Button>
@@ -25,7 +31,14 @@
             <TextBlock Text="{Binding ElementName=treeGridData,Path=ItemsSource.Count}"/>
         </UniformGrid>
         <mgtree:DataGridTree  x:Name="treeGridData" Grid.Row="1"
-                                   TreeCellHeader="Tree" TreeCell = "{Binding Name}" ParentIdPath="PId" IdPath="Id">
+                                   TreeCellHeader="Tree" ParentIdPath="PId" IdPath="Id"
+                              >
+            <mgtree:DataGridTree.TreeCell>
+                <!--<TextBox Text = "{Binding Name}"/>-->
+                <ControlTemplate>
+                    <TextBlock Text = "{Binding Name}" Loaded="TextBlock_Loaded" DataContextChanged="TextBlock_DataContextChanged"/>
+                </ControlTemplate>
+            </mgtree:DataGridTree.TreeCell>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
@@ -35,5 +48,4 @@
             </DataGrid.Columns>
         </mgtree:DataGridTree>
     </Grid>
-
 </Window>

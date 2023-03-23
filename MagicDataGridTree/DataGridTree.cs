@@ -31,15 +31,41 @@ namespace MagicDataGridTree
         {
             using var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MagicDataGridTree.DataGridTreeStyles.xaml")!);
             var cellTempStr = reader.ReadToEnd();
+            object resource = null;
             if (treeCell != null)
             {
-                var cellStr = System.Windows.Markup.XamlWriter.Save(treeCell);
-                cellTempStr = cellTempStr.Replace("</ContentControl>", cellStr + "</ContentControl>");
+                var cellStr = "";
+                switch (treeCell)
+                {
+                    case ControlTemplate dataTemplate:
+                        var ttt = dataTemplate.LoadContent();
+                        //dataTemplate.Template
+                        var cellStr1 = System.Windows.Markup.XamlWriter.Save(ttt);
+                        cellStr = " Template=\"{DynamicResource __DataGridTree__TreeCell_Template__}\" />";
+                        resource = dataTemplate;
+                        break;
+                    case DataTemplate dataTemplate:
+                        var ttt2 = dataTemplate.LoadContent();
+                        
+                        var cellStr12 = System.Windows.Markup.XamlWriter.Save(dataTemplate.Template);
+                        cellStr = " Template=\"{DynamicResource __DataGridTree__TreeCell_Template__}\" />";
+                        resource = dataTemplate;
+                        break;
+                    default:
+                        cellStr = ">"+System.Windows.Markup.XamlWriter.Save(treeCell) + "</ContentControl>";
+                        break;
+                }
+                cellTempStr = cellTempStr.Replace("></ContentControl>", cellStr);
             }
             StringReader stringReader = new StringReader(cellTempStr);
             XmlReader xmlReader = XmlReader.Create(stringReader);
-            var dataTemplateRlt = System.Windows.Markup.XamlReader.Load(xmlReader);
-            return (DataTemplate)dataTemplateRlt;
+            var dataTemplateRlt = (DataTemplate)System.Windows.Markup.XamlReader.Load(xmlReader);
+            if(resource!=null)
+            {
+                dataTemplateRlt.Resources["__DataGridTree__TreeCell_Template__"] = resource;
+            }
+            
+            return dataTemplateRlt;
         }
 
         private readonly NullableDictionary<object, TreeRowCtlData> _dicCtlDatas;
