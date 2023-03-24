@@ -36,7 +36,9 @@
             <mgtree:DataGridTree.TreeCell>
                 <!--<TextBox Text = "{Binding Name}"/>-->
                 <ControlTemplate>
-                    <TextBlock Text = "{Binding Name}" Loaded="TextBlock_Loaded" DataContextChanged="TextBlock_DataContextChanged"/>
+                    <Grid Background="Blue" HorizontalAlignment="Stretch">
+                        <TextBlock Text = "{Binding Name}" Loaded="TextBlock_Loaded" DataContextChanged="TextBlock_DataContextChanged"/>
+                    </Grid>
                 </ControlTemplate>
             </mgtree:DataGridTree.TreeCell>
             <DataGrid.Columns>
