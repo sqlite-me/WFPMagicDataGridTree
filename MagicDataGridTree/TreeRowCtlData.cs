@@ -168,11 +168,8 @@ namespace MagicDataGridTree
             DependencyProperty.Register("ParentId", typeof(object), typeof(TreeRowCtlData), new PropertyMetadata(null));
 
 
-        public int Leve { get; internal set; }
-
-        public double PaddingLeft => Leve * _treeGridData.IndentSpaces;
-
-
+        public int Leve { get=> _leve; internal set=>SetProperty(ref _leve,value); }
+        private int _leve;
 
         public DataGridTreeRow TreeGridRow
         {

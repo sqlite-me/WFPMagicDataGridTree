@@ -231,7 +231,10 @@ namespace MagicDataGridTree
             if (this.TreeCellTemplate == null)
             {
                 var binding = BindingOperations.GetBinding(this, TreeCellProperty);
-              var cellTemplate = getTreeCellTemplate(binding??this.TreeCell);
+                var treeCell = binding ?? this.TreeCell;
+                if (treeCell == null && TreeCellHeader == null) return;
+
+                var cellTemplate = getTreeCellTemplate(treeCell);
                 _treeColumn = new DataGridTemplateColumn
                 {
                     CellTemplate = cellTemplate,
