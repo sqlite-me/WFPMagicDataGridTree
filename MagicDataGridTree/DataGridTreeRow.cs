@@ -20,36 +20,51 @@ namespace MagicDataGridTree
 
             this.Expanded = TreeRowCtlData?.Expanded??false;
 
-            var hasBinding = BindingOperations.GetBinding(this, ChildrenProperty);
-            if (hasBinding == null)
+            if (checkOldBinding(ChildrenProperty))
                 BindingOperations.SetBinding(this, ChildrenProperty,
-                    new Binding($"{nameof(TreeRowCtlData.ChildrenDatas)}") { Source = TreeRowCtlData });
+                    new Binding($"{nameof(TreeRowCtlData.ChildrenDatas)}") { Source = TreeRowCtlData,Mode=BindingMode.OneWay });
 
-            hasBinding = BindingOperations.GetBinding(this, HasChildProperty);
-            if (hasBinding == null)
+            if (checkOldBinding(HasChildProperty))
                 BindingOperations.SetBinding(this, HasChildProperty,
-                new Binding($"{nameof(TreeRowCtlData.HasChild)}") { Source = TreeRowCtlData });
+                new Binding($"{nameof(TreeRowCtlData.HasChild)}") { Source = TreeRowCtlData, Mode = BindingMode.OneWay });
 
-            hasBinding = BindingOperations.GetBinding(this, ChildrenCountProperty);
-            if (hasBinding == null)
+            if (checkOldBinding(ChildrenCountProperty))
                 BindingOperations.SetBinding(this, ChildrenCountProperty,
-                new Binding($"{nameof(TreeRowCtlData.ChildrenCount)}") { Source = TreeRowCtlData });
+                new Binding($"{nameof(TreeRowCtlData.ChildrenCount)}") { Source = TreeRowCtlData, Mode = BindingMode.OneWay });
 
-            hasBinding = BindingOperations.GetBinding(this, TreeLeveProperty);
-            if (hasBinding == null)
+            if (checkOldBinding(TreeLeveProperty))
                 BindingOperations.SetBinding(this, TreeLeveProperty,
                 new Binding($"{nameof(TreeRowCtlData.Leve)}")
                 {
                     Source = TreeRowCtlData,
+                    Mode = BindingMode.OneWay
                 });
 
             BindingOperations.SetBinding(this, AllChildrenProperty,
                 new Binding($"{nameof(TreeRowCtlData.AllChildrenDatas)}")
                 {
                     Source = TreeRowCtlData,
+                    Mode = BindingMode.OneWay
                 });
-
         }
+
+        private bool checkOldBinding(DependencyProperty bindingProperty)
+        {
+            var hasBinding = BindingOperations.GetBinding(this, bindingProperty);
+            if(hasBinding!=null)
+            {
+                if(hasBinding.Source is TreeRowCtlData)
+                {
+                    BindingOperations.ClearBinding(this, bindingProperty);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         internal TreeRowCtlData TreeRowCtlData{get;private set;}
 
         public bool ShowToggleButton

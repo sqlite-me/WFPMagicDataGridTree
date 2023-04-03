@@ -170,24 +170,6 @@ namespace MagicDataGridTree
 
         public int Leve { get=> _leve; internal set=>SetProperty(ref _leve,value); }
         private int _leve;
-
-        public DataGridTreeRow TreeGridRow
-        {
-            get { return _treeGridRow; }
-            set
-            {
-                _treeGridRow = value;
-                treeGridRowPropertyChangedCallback();
-            }
-        }
-        private DataGridTreeRow _treeGridRow;
-
-
-        private void treeGridRowPropertyChangedCallback()
-        {
-            _treeGridRow?.SetCtlData(this);
-        }
-
         internal void SetIsOpenAll(bool isOpen)
         {
             if (isOpen)

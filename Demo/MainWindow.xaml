@@ -36,12 +36,14 @@
             <mgtree:DataGridTree.TreeCell>
                 <!--<TextBox Text = "{Binding Name}"/>-->
                 <ControlTemplate>
-                    <Grid Background="Blue" HorizontalAlignment="Stretch">
+                    <Grid HorizontalAlignment="Stretch">
                         <TextBlock Text = "{Binding Name}" Loaded="TextBlock_Loaded" DataContextChanged="TextBlock_DataContextChanged"/>
                     </Grid>
                 </ControlTemplate>
             </mgtree:DataGridTree.TreeCell>
             <DataGrid.Columns>
+                <DataGridTextColumn Header="TreeLeve" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=TreeLeve}"/>
+                <DataGridTextColumn Header="Leve" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=TreeRowCtlData.Leve}"/>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="PId" Binding="{Binding PId}"/>

@@ -290,7 +290,9 @@ namespace MagicDataGridTree
             //{
             //    binding = processBinding(this.TreeCellBinding, item);
             //}
-            _dicCtlDatas[item].TreeGridRow = row;
+            var ctlData = _dicCtlDatas[item];
+            row.SetCtlData(ctlData);
+            //ctlData.TreeGridRow = row;
             //BindingOperations.SetBinding(row.TreeRowCtlData, TreeRowCtlData.TreeCellProperty, binding);
         }
 
