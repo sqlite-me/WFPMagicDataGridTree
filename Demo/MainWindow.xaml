@@ -22,6 +22,7 @@
         <UniformGrid>
             <Button x:Name="btnTest" Click="btnTest_Click">Test Add</Button>
             <Button x:Name="btnTestRemove" Click="btnTestRemove_Click">Test Remove</Button>
+            <Button x:Name="btnAddOne" Click="btnAddOne_Click">Add one</Button>
             <ToggleButton x:Name="btnExpandAll" IsChecked="{Binding ElementName=treeGridData,Path=ExpandAll}"
                           >
                 <StackPanel Orientation="Horizontal">

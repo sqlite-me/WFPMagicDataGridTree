@@ -30,7 +30,7 @@ namespace Demo
         {
             InitializeComponent();
 
-            addDatas(rd.Next(500, 5000));
+           // addDatas(rd.Next(500, 5000));
 
             treeGridData.ItemsSource = view = CollectionViewSource.GetDefaultView(datas);
 
@@ -110,6 +110,11 @@ namespace Demo
         private void TextBlock_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
 
+        }
+
+        private void btnAddOne_Click(object sender, RoutedEventArgs e)
+        {
+            addDatas(1);
         }
     }
 

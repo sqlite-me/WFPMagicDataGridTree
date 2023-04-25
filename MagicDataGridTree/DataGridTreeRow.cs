@@ -65,7 +65,7 @@ namespace MagicDataGridTree
             return true;
         }
 
-        internal TreeRowCtlData TreeRowCtlData{get;private set;}
+        public TreeRowCtlData TreeRowCtlData{get;private set;}
 
         public bool ShowToggleButton
         {

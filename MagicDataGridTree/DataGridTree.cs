@@ -264,15 +264,6 @@ namespace MagicDataGridTree
             _itemsDisplayListView.Refresh();
         }
 
-        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseLeftButtonDown(e);
-        }
-
-        protected override void OnLoadingRowDetails(DataGridRowDetailsEventArgs e)
-        {
-            base.OnLoadingRowDetails(e);
-        }
         protected override DependencyObject GetContainerForItemOverride()
         {
             var row = new DataGridTreeRow();
