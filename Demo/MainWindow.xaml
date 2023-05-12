@@ -43,6 +43,93 @@
                 </ControlTemplate>
             </mgtree:DataGridTree.TreeCell>
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Tree Custom" x:Name="colCtls" MinWidth="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" Margin="3,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition x:Name="col" Width="auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Visibility="Hidden">
+                                    <Rectangle.Width>
+                                        <MultiBinding Converter="{StaticResource __Magic.DataGridTree.PaddingLeft.Converter__}">
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=DataGrid}" Path="IndentSpaces"/>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=DataGridRow}" Path="TreeLeve"/>
+                                        </MultiBinding>
+                                    </Rectangle.Width>
+                                </Rectangle>
+                                
+                                <ToggleButton x:Name="ExpanderButton" BorderThickness="0" Grid.Column="1" Visibility="Visible" MaxWidth="300" HorizontalAlignment="Left" IsEnabled="True" Cursor="Hand"
+                          IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=Expanded,Mode=TwoWay}">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Grid x:Name="Root"  MinHeight="{TemplateBinding MinHeight}" Background="{TemplateBinding Background}" VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}" MaxWidth="{TemplateBinding MaxWidth}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+                                                        <VisualState x:Name="Normal"/>
+                                                        <VisualState x:Name="MouseOver">
+                                                            <Storyboard>
+                                                                <ColorAnimation Duration="0" To="#FF1BBBFA" Storyboard.TargetProperty="(Path.Stroke).Color" Storyboard.TargetName="UncheckedVisual"/>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="Disabled">
+                                                            <Storyboard>
+                                                                <DoubleAnimation Duration="0" To=".7" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Root"/>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                    <VisualStateGroup x:Name="CheckStates">
+                                                        <VisualState x:Name="Unchecked"/>
+                                                        <VisualState x:Name="Checked">
+                                                            <Storyboard>
+                                                                <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="UncheckedVisual"/>
+                                                                <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="CheckedVisual"/>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <Grid x:Name="header" HorizontalAlignment="Right" Margin="2 2 5 2" Visibility="Collapsed">
+                                                    <Path x:Name="UncheckedVisual" Data="M 0,0 L 0,9 L 5,4.5 Z" Fill="#FFFFFFFF" HorizontalAlignment="Right" Height="9" Stroke="#FF989898" StrokeThickness="1" StrokeLineJoin="Miter" VerticalAlignment="Center" Width="6"/>
+                                                    <Path x:Name="CheckedVisual" Data="M 6,0 L 6,6 L 0,6 Z" Fill="#FF262626" HorizontalAlignment="Center" Height="6" Opacity="0" StrokeLineJoin="Miter" VerticalAlignment="Center" Width="6"/>
+                                                </Grid>
+                                                <TextBlock Grid.Column="1" Foreground="Black" Text="{Binding  Name}"/>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <!--<MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=HasChild}" Value="True"/>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=ShowToggleButton}" Value="True"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter TargetName="header" Property="Visibility" Value="Visible"/>
+                                                </MultiDataTrigger>-->
+                                                <Trigger Property="IsEnabled" Value="True">
+                                                    <Setter TargetName="header" Property="Visibility" Value="Visible"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=HasChild}" Value="True"/>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=ShowToggleButton}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="ExpanderButton" Property="Background" Value="Red"/>
+                                </MultiDataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
                 <DataGridTextColumn Header="TreeLeve" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=TreeLeve}"/>
                 <DataGridTextColumn Header="Leve" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=mgtree:DataGridTreeRow},Path=TreeRowCtlData.Leve}"/>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>

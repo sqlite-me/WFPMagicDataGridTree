@@ -56,6 +56,8 @@ namespace MagicDataGridTree
 
         private void unExpand(bool needFresh = true)
         {
+            if (this.ChildrenDatas?.Any() != true) { return; }
+
             _itemsSourceView.CancelEdit();
             var startIndex = _itemsDisplayList.IndexOf(Target);
             if (startIndex == -1) return;
