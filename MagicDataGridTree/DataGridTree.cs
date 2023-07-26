@@ -77,12 +77,12 @@ namespace MagicDataGridTree
         {
             AutoGenerateColumns = false;
             CanUserAddRows = false;
-
             _dicCtlDatas = new();
 
             _itemsDisplayList = new();
 
             _itemsDisplayListView = new ListCollectionView(_itemsDisplayList);
+            _treeHelper = new TreeHelper(this);
             base.ItemsSource = _itemsDisplayListView;
 
             base.Sorting += DataGridTree_Sorting;
@@ -111,6 +111,7 @@ namespace MagicDataGridTree
         public static readonly DependencyProperty TreeCellTemplateProperty =
             DependencyProperty.Register("TreeCellTemplate", typeof(DataGridColumn), typeof(DataGridTree), new PropertyMetadata(null));
         private DataGridColumn? _treeColumn;
+        private readonly TreeHelper _treeHelper;
 
         public object TreeCell
         {
@@ -259,8 +260,7 @@ namespace MagicDataGridTree
         private void fresh(bool merge = false)
         {
             _itemsDisplayListView.CancelEdit();
-            TreeHelper treeHelper = new(this);
-            treeHelper.BuildTree();
+            _treeHelper.BuildTree();
             _itemsDisplayListView.Refresh();
         }
 
@@ -291,19 +291,15 @@ namespace MagicDataGridTree
         {
             private readonly List<object> ordedArr = new();
             private readonly DataGridTree treeGridData;
-            private readonly IEnumerable ItemsSource;
-            private readonly NullableDictionary<object, TreeRowCtlData> _dicToTreeDatas;
+            private IEnumerable ItemsSource=> treeGridData.ItemsSource;
+            private NullableDictionary<object, TreeRowCtlData> _dicToTreeDatas=> treeGridData._dicCtlDatas;
             private NullableDictionary<object, TreeRowCtlData>? _dicToTreeDatasOld;
-            private readonly List<object> _itemsDisplayList;
-            private readonly List<TreeRowCtlData> _roots;
+            private List<object> _itemsDisplayList=> treeGridData._itemsDisplayList;
+            private List<TreeRowCtlData> _roots=> treeGridData._roots;
 
             public TreeHelper(DataGridTree treeGridData)
             {
                 this.treeGridData = treeGridData;
-                ItemsSource = treeGridData.ItemsSource;
-                _dicToTreeDatas = treeGridData._dicCtlDatas;
-                _itemsDisplayList = treeGridData._itemsDisplayList;
-                _roots = treeGridData._roots;
             }
 
             public void BuildTree()
